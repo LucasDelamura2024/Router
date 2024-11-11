@@ -205,7 +205,8 @@ async function calculateOptimizedRoute() {
         // Adicionar marcadores para cada ponto de parada com números
         geocodedAddresses.forEach((geocodedPoint, index) => {
             if (!geocodedPoint) return; // Ignorar pontos inválidos
-            L.marker([geocodedPoint.lat, geocodedPoint.lon], {
+        
+            const marker = L.marker([geocodedPoint.lat, geocodedPoint.lon], {
                 icon: L.divIcon({
                     className: 'numbered-marker',
                     html: `<div>${index + 1}</div>`,
@@ -213,6 +214,7 @@ async function calculateOptimizedRoute() {
                     iconAnchor: [15, 15],
                 }),
             }).addTo(routeLayer);
+        
             // Adicionar popup com o nome da rua
             marker.bindPopup(`<strong>Endereço:</strong> ${geocodedPoint.display_name}`).openPopup();
         });
