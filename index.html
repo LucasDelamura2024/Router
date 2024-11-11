@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roteirizador Avançado</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+   <style>
+  /* Estilo global inspirado no site da Apple */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    background: #ffffff;
+    border-bottom: 1px solid #e1e1e6;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #007AFF;
+  }
+
+  .header-message {
+    font-size: 14px;
+    color: #6c757d;
+    font-style: italic;
+  }
+
+  /* Main Section */
+  .section {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Inputs */
+  .inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .inputs input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px;
+    border: 1px solid #d1d1d6;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s;
+  }
+
+  .inputs input:focus {
+    border-color: #007AFF;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+
+  /* Botões */
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .btns button {
+    padding: 12px 20px;
+    background: linear-gradient(to right, #007AFF, #34C759);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btns button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #0056B3, #28A745);
+  }
+
+  /* Lista de endereços */
+  .address-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .address-list li {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .address-list button {
+    background: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .address-list button:hover {
+    background: #d32f2f;
+    transform: scale(1.1);
+  }
+
+  /* Resumo da Rota */
+  .summary {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #007AFF;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Marcadores do mapa */
+  .numbered-marker {
+    background: linear-gradient(to bottom, #f5f5f7, #d1d1d6);
+    color: #007AFF;
+    border: 2px solid #007AFF;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Footer */
+  .footer {
+    background: #f5f5f7;
+    color: #6c757d;
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 14px;
+  }
+
+  .footer a {
+    color: #007AFF;
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  #map {
+    height: 300px; /* Altura do mapa */
+    width: 100%; /* Largura do mapa */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .inputs input {
+      min-width: 100%;
+    }
+
+    .btns button {
+      width: 100%;
+    }
+  }
+</style>
+
+
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-title">
+      <i class="fas fa-route"></i> ROTEIRIZADOR
+    </div>
+    <div class="header-message">
+      Em desenvolvimento por Lucas Delamura
+    </div>
+  </div>
+
+  <!-- Main Section -->
+  <section class="section">
+    <div class="inputs">
+      <input type="text" id="cep" placeholder="Digite o CEP">
+      <input type="text" id="number" placeholder="Número">
+      <input type="text" id="address-manual" placeholder="Endereço (opcional)">
+    </div>
+    <div class="btns">
+      <button id="add-address-btn">Adicionar Endereço</button>
+      <button id="calculate-route-btn">Calcular Rota</button>
+      <button id="recalculate-route-btn">Recalcular Melhor Rota</button>
+      <button id="open-maps-btn">Abrir Rota no Google Maps</button>
+    </div>
+    <div class="list">
+      <ul id="address-list" class="address-list"></ul>
+      <div class="summary" id="summary">Resumo da Rota</div>
+      <div id="map"></div>
+    </div>
+  </section>
+
+  <div class="btns">
+    <button id="start-route-btn">Iniciar Rota</button>
+  </div>
+  
+
+  <!-- Footer -->
+  <div class="footer">
+    Desenvolvido por <a href="mailto:78delamura@gmail.com">Lucas Delamura</a>. Todos os direitos reservados &copy; 2024.
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
