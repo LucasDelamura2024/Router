@@ -51,9 +51,9 @@ async function geocodeAddress(address) {
 async function addAddress() {
   const cep = document.getElementById("cep").value.trim();
   const number = document.getElementById("number").value.trim();
-  const manualAddress = document.getElementById("address-manual").value.trim();
+  const address = document.getElementById("address").value.trim();
 
-  if (!cep && !manualAddress) {
+  if (!cep && !address) {
     alert("Por favor, insira um CEP ou endereço.");
     return;
   }
@@ -78,14 +78,14 @@ async function addAddress() {
       return;
     }
   } else {
-    fullAddress = `${manualAddress}, ${number}`;
+    fullAddress = `${address}, ${number}`;
   }
 
   addresses.push(fullAddress);
   updateAddressList();
   document.getElementById("cep").value = "";
   document.getElementById("number").value = "";
-  document.getElementById("address-manual").value = "";
+  document.getElementById("address").value = "";
 }
 
 // Atualizar lista de endereços na interface
